@@ -33,4 +33,7 @@ next row gives nconv for the following array.  Then the viewing geometry is a
 database (this needs better commenting).  All four of the 2.5 cm-1 ATMOS maps
 from December-January 2000 are stored here.
 
-
+* The `csv` files correspond to the figure `jupiter_T.png`, providing the latitude,
+pressure, and temperature data required to recreate this figure. These calculations use v4.2
+of the CIRS calibration, and are identical to the T(p,lat) data presented in Fletcher et al.
+(2016). 
