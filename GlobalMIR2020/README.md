@@ -3,7 +3,7 @@ Repository for Cassini Saturn temperature data based on Fletcher et al., 2018
 
 **This is an update, based on work preparing for a new book chapter, Fletcher et al. (2020) https://arxiv.org/abs/2012.09288.
 
-Fletcher et al. (2018) used data from Cassini's Composite Infrared Spectrometer (CIRS) to investigate the dynamics and composition of Saturn's atmosphere from 2004-2017.  This repository contains the interpolated temperature and composition field over the entire time series.  All CIRS interferograms were curtailed so that they all had the same spectral resolution (15 cm-1), and both PRIME observations and RIDERs (where CIRS observed simultaneously with other Cassini instruments) were included in this analysis.
+Fletcher et al. (2018) used data from Cassini's Composite Infrared Spectrometer (CIRS) to investigate the dynamics and composition of Saturn's atmosphere from 2004-2017.  This repository contains the interpolated temperature and composition field over the entire time series.  All CIRS interferograms were curtailed so that they all had the same spectral resolution (15 cm-1), and both PRIME observations and RIDERs (where CIRS observed simultaneously with other Cassini instruments) were included in this analysis.  All focal planes were included, from FP1 (100-500 cm-1), FP3 (600-880 cm-1) and FP4 (1150-1370 cm-1) in the inversion to sound from the troposphere to the stratosphere.
 
 Cassini/CIRS spectra were extracted from v4.3.4 of the database via a series of vanilla queries, and then averaged onto a monthly time grid and a 2-degree resolution latitude grid (stepped every 1 degree).  These averages were used to generate individual spectral files for input to the NEMESIS optimal estimation retrieval algorithm.  
 
@@ -15,7 +15,7 @@ These contain the interpolated temperatures (FINALTEMP) as an NPROxNLATxNDAYS ar
 Note that dates before and after the Cassini/CIRS time series have been set to zero to avoid the temptation to extrapolate to other dates.
 
 # Reconstructed Ethane and Acetylene
-Finally, vertical distributions of ethane and acetylene were retrieved at the same time as temperature, and can be used to estimate the latitudinal and temporal changes in these hydrocarbons at a single pressure level.  This is the key change from 2018 - instead of simply scaling the profiles, I allowed the full profile to vary, so that pressures far away from the weighting function peak would stick to the prior.  In the `reconst_c2h2_2020.sav` and  `reconst_c2h6_2020.sav` files, we provide estimates of the abundance of each species in ppmv as a function of latitude, pressure, and time:
+Vertical distributions of ethane and acetylene were retrieved at the same time as temperature, and can be used to estimate the latitudinal and temporal changes in these hydrocarbons at a single pressure level.  This is the key change from 2018 - instead of simply scaling the profiles, I allowed the full profile to vary, so that pressures far away from the weighting function peak would stick to the prior.  In the `reconst_c2h2_2020.sav` and  `reconst_c2h6_2020.sav` files, we provide estimates of the abundance of each species in ppmv as a function of latitude, pressure, and time:
 
 FINALCOMP       FLOAT     = Array[120, 181, 474]
 
@@ -24,6 +24,28 @@ NEWDAYS         FLOAT     = Array[474]
 NEWLAT          FLOAT     = Array[181]
 
 PRESS           FLOAT     = Array[120]
+
+# Individual retrievals
+The interpolated datasets above were specifically designed to smooth over inversions that were clear outliers, particularly those related to the 2010-11 storm system and the warm stratospheric domain.  The file `seasonalret.sav` contains the outputs of the individual retrievals without any filtering.  This contains the following arrays, where the first element is always the time axis.
+* `temp`:  Temperatures and uncertainties in K.
+* `parah2`:   Para-H2
+* `feqmh2`:    Para-H2 equilibrium based on the retrieved temperatures.
+* `lapse_rate`:  Lapse rate
+* `curvature`:  Second derivative of the temperatures with height
+* `ph3vmr`:    Phosphine
+* `nh3vmr`:  Ammonia
+* `c4h2vmr`:  Diacetylene
+* `c3h4vmr`:   Methlacetylene
+* `c2h2vmr`:   Acetylene  
+* `c2h6vmr`:  Ethane
+* `lat`:    Planetographic latitude 
+* `chisq`:  Chisq/N for the fit    
+* `date`:   Date  
+* `julian`:   Julian date (most useful for plotting) 
+
+For plotting purposes in the papers noted above, I applied the following filter:  the minimum tropospheric lapse rate must exceed -1.5 K/km, the maximum tropospheric lapse rate should be less than 0.05 K/km, the 1-bar temperature should be greater than 127 K, and the 100-mbar para-H2 fraction should be between 0.4 and 0.5.  This removed several problematic retrievals that did not fully converge. 
+
+ 
 
 
 
